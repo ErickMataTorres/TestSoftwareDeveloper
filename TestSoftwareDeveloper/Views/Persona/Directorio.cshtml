@@ -121,7 +121,7 @@
                     </div>
 
                     <div class="modalBodyContainers">
-                        <label class="col-3">Identificación: *</label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="NoEspaciosPrimero(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');"/>
+                        <label class="col-3">Identificación: *</label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="SoloLetrasYNumeros(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');"/>
                     </div>
                         <label id="identificacionRequerido">La identificación es requerida</label>
 
@@ -194,6 +194,19 @@
             }
         }
         if (!soloLetras.test(event.key) && event.code !== "Space") {
+            event.preventDefault();
+        }
+    }
+
+    const SoloLetrasYNumeros = (event) => {
+        const soloLetrasYNumeros =/^[a-zA-Z0-9]+$/;
+        if (event.target.value === "") {
+            if (event.code === "Space") {
+                event.preventDefault();
+                return;
+            }
+        }
+        if (!soloLetrasYNumeros.test(event.key)) {
             event.preventDefault();
         }
     }
