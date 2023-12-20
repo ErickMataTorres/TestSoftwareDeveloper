@@ -1,0 +1,175 @@
+﻿@{
+    ViewData["Title"] = "Ventas";
+}
+
+<style>
+    h1 {
+        text-align: center;
+    }
+
+    .nuevaContainer {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .modalBodyContainers {
+        display: flex;
+        align-items: center;
+    }
+
+    .contenedorDivsModal div:not(:first-child) {
+        margin-top: 2%;
+    }
+
+    #nombreRequerido {
+        margin-left: 23%;
+        color: #EA4242;
+        display: none;
+    }
+
+    #aPaternoRequerido {
+        margin-left: 23%;
+        color: #EA4242;
+        display: none;
+    }
+
+    #identificacionRequerido {
+        margin-left: 22%;
+        color: #EA4242;
+        display: none;
+    }
+
+    #camposCompletos {
+        margin-top: 2%;
+        color: #EA4242;
+        display: none;
+    }
+
+    .inputRequerido {
+        border: 2px solid #EA4242;
+    }
+
+    #mensajeError2 {
+        margin-top: 2%;
+        color: #EA4242;
+        display: none;
+    }
+
+</style>
+
+<div class="modal fade" tabindex="-1" id="modalFacturas">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="contenedorDivsModal">
+                    <div class="modalBodyContainers">
+                        <label class="col-3">Id:</label><input type="text" class="form-control" placeholder="..." readonly id="txtId">
+                    </div>
+
+                    <div class="modalBodyContainers">
+                        <label class="col-3">Nombre: *</label>
+                        <input type="text" class="form-control" placeholder="..." id="txtNombre" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event, 50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'nombreRequerido');" />
+                    </div>
+                    <label id="nombreRequerido">El nombre es requerido</label>
+
+                    <div class="modalBodyContainers">
+                        <label class="col-3">A. Paterno: *</label><input type="text" class="form-control" placeholder="..." id="txtAPaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'aPaternoRequerido');" />
+                    </div>
+                    <label id="aPaternoRequerido">El apellido paterno es requerido</label>
+
+                    <div class="modalBodyContainers">
+                        <label class="col-3">A. Materno:</label><input type="text" class="form-control" placeholder="..." id="txtAMaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="ValidacionPegado(event);" />
+                    </div>
+
+                    <div class="modalBodyContainers">
+                        <label class="col-3">Identificación: *</label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="NoEspaciosPrimero(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');" />
+                    </div>
+                    <label id="identificacionRequerido">La identificación es requerida</label>
+
+                </div>
+
+                <label id="camposCompletos">Ingresar los campos obligatorios</label>
+                <label id="mensajeError2"></label>
+
+                <h4 id="h4Borrar">¿Estás seguro de borrar el registro?<br />Se borrarán todas las facturas de la persona</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCerrarModal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmar" onclick="EjecutarAccion();">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<h1>Ventas</h1>
+
+<div class="container">
+
+    <div class="nuevaContainer">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFacturas">Registrar</button>
+    </div>
+
+    <table id="tablaFacturas" class="table table-hover table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Persona</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        @* <tbody id="tbodyTablaFacturas">
+        </tbody> *@
+        <tfoot>
+            <tr>
+                <th>Id</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Persona</th>
+                <th>Acción</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script src="/js/Url.js"></script>
+
+<script>
+    const CargarPagina = () => {
+        ListaFacturas();
+    }
+    const ListaFacturas = () => {
+        $("#tablaFacturas").DataTable({
+            ajax: {
+                url: Url + "/Factura/ListaFacturas",
+                type: "GET",
+                dataSrc: ""
+            },
+            columns: [
+                { data: "id" },
+                { data: "fecha" },
+                { data: "monto" },
+                { data: "nombrePersona" },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `
+                                    <button class="btn btn-warning">Modificar</button>
+                                    <button class="btn btn-danger">Borrar</button>
+                               `
+                    }
+                }
+            ],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-MX.json'
+            }
+        });
+    }
+    window.onload = CargarPagina;
+</script>
