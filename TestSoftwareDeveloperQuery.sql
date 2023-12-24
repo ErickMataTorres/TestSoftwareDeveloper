@@ -108,12 +108,49 @@ CREATE TABLE Facturas
 	Monto NUMERIC(12,2) NOT NULL,
 	IdPersona INT NOT NULL
 )
-
+-- Procedimiento almacenado para obtener todas las facturas de la tabla
 ALTER PROCEDURE spListaFacturas
 AS
 BEGIN
-	SELECT Facturas.Id, Facturas.Fecha, Facturas.Monto, Personas.Id AS [IdPersona], Personas.Nombre AS [NombrePersona] FROM Facturas INNER JOIN Personas
+	-- Instrucción SELECT para obtener datos de la tabla facturas y la tabla personas haciendo un inner join
+	-- coincidiendo en el IdPersona de la tabla Facturas y con el Id de la tabla Personas
+	SELECT Facturas.Id, Facturas.Fecha, Facturas.Monto, Personas.Id AS [IdPersona],
+		Personas.Nombre AS [NombrePersona], Personas.ApellidoPaterno AS [APaternoPersona],
+		Personas.ApellidoMaterno AS [AMaternoPersona] FROM Facturas INNER JOIN Personas
 		ON Facturas.IdPersona=Personas.Id
 END
-
-INSERT INTO Facturas (Fecha, Monto, IdPersona) VALUES (SYSDATETIME(), 30, 109)
+-- Creación de procedimiento almacenado para registrar o modificar una factura
+CREATE PROCEDURE spRegistrarFactura
+@Id INT,
+@Fecha DATETIME,
+@Monto NUMERIC(12,2),
+@IdPersona INT
+AS
+BEGIN
+	-- Si no existe el Id seleccionado entrará en esta condición
+	IF NOT EXISTS(SELECT Id FROM Facturas WHERE Id=@Id)
+	BEGIN
+		-- Instrucción para insertar los datos ingresador en la tabla facturas
+		INSERT INTO Facturas (Fecha, Monto, IdPersona) VALUES (@Fecha, @Monto, @IdPersona);
+		-- Se devuelve este Id y Nombre del mensaje para mostrarselo al usuario
+		SELECT '1' AS [Id], 'Se ha registrado correctamente' AS [Nombre];
+	END
+	-- Si existe el Id seleccionado entrará aquí
+	ELSE
+	BEGIN
+		-- Instrucción para modificar los datos de la factura de acuerdo al Id seleccionado
+		UPDATE Facturas SET Fecha=@Fecha, Monto=@Monto, IdPersona=@IdPersona WHERE Id=@Id;
+		-- Se devuelve este Id y Nombre del mensaje para mostrarselo al usuario
+		SELECT '2' AS [Id], 'Se ha modificado correctamente' AS [Nombre];
+	END
+END
+-- Procedimiento almacenado para borrar una factura de una persona
+CREATE PROCEDURE spBorrarFactura
+@Id INT
+AS
+BEGIN
+	-- Instruncción para borrar la factura de acuerdo al Id ingresado por el usuario
+	DELETE FROM Facturas WHERE Id=@Id;
+	-- Instrucción SELECT para seleccionar un mensaje que se mostrará al usuario
+	SELECT 'Se ha borrado correctamente';
+END

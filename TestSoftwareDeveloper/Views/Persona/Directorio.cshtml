@@ -57,6 +57,10 @@
         color: #EA4242;
         display:none;
     }
+
+    #labelAsterisco {
+        color: #EA4242;
+    }
 </style>
 <h1>Directorio</h1>
 
@@ -92,7 +96,7 @@
     </table>
 </div>
 
-<div class="modal fade" tabindex="-1" id="modalPersonas">
+<div class="modal fade" tabindex="-1" id="modalPersonas" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -106,13 +110,13 @@
                     </div>
 
                     <div class="modalBodyContainers">
-                        <label class="col-3">Nombre: *</label>
+                        <label class="col-3">Nombre: <label id="labelAsterisco">*</label></label>
                         <input type="text" class="form-control" placeholder="..." id="txtNombre" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event, 50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'nombreRequerido');" />
                     </div>
                     <label id="nombreRequerido">El nombre es requerido</label>
                     
                     <div class="modalBodyContainers">
-                        <label class="col-3">A. Paterno: *</label><input type="text" class="form-control" placeholder="..." id="txtAPaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'aPaternoRequerido');"/>
+                        <label class="col-3">A. Paterno: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtAPaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'aPaternoRequerido');" />
                     </div>
                     <label id="aPaternoRequerido">El apellido paterno es requerido</label>
 
@@ -121,7 +125,7 @@
                     </div>
 
                     <div class="modalBodyContainers">
-                        <label class="col-3">Identificación: *</label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="SoloLetrasYNumeros(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');"/>
+                        <label class="col-3">Identificación: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="SoloLetrasYNumeros(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');" />
                     </div>
                         <label id="identificacionRequerido">La identificación es requerida</label>
 
@@ -144,21 +148,24 @@
 <script>
 
     const CargarPagina = () => {
-        // ListaPersonas();
-        NuevoDataTable();
+        ListaPersonas();
         
     }
 
     const AppendAlert = (mensaje, tipo) => {
+
         const liveAlertPlaceholder = document.getElementById("liveAlertPlaceholder");
+        const idUnico = Date.now().toString() + Math.random().toString();
         const wrapper = document.createElement('div');
         wrapper.innerHTML = [
-            `<div class="alert alert-${tipo} alert-dismissible text-center" role="alert">`,
+            `<div class="alert alert-${tipo} alert-dismissible text-center" role="alert" id="${idUnico}">`,
             `   <div class="alertMensajeLetra">${mensaje}</div>`,
-            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
             '</div>'
         ].join('');
         liveAlertPlaceholder.append(wrapper);
+        setTimeout(() => {
+            document.getElementById(idUnico).remove();
+        }, 8000);
     }
 
     const CampoObligatorio = (event, idInput, idIdentificador) => {
@@ -282,6 +289,20 @@
         if (txtNombre.value === "" || txtAPaterno.value === "" || txtIdentificacion.value === "") {
             const camposCompletos = document.getElementById("camposCompletos");
             if (accion === "Registrar" || accion === "Modificar") {
+
+                if (txtNombre.value === "") {
+                    document.getElementById("nombreRequerido").style.display = "block";
+                    txtNombre.classList.add("inputRequerido");
+                }
+                if (txtAPaterno.value === "") {
+                    document.getElementById("aPaternoRequerido").style.display = "block";
+                    txtAPaterno.classList.add("inputRequerido");
+                }
+                if (txtIdentificacion.value === "") {
+                    document.getElementById("identificacionRequerido").style.display = "block";
+                    txtIdentificacion.classList.add("inputRequerido");
+                }
+
                 camposCompletos.style.display = "block";
                 return;
             }
@@ -357,76 +378,6 @@
     }    
 
     const ListaPersonas = () => {
-        fetch(Url + "/Persona/ListaPersonas", {
-            method:"GET"
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Ha ocurrido un error con la respuesta");
-                }
-                return response.json();
-            })
-            .then(responseData => {
-
-                // console.log(responseData[0]);
-                
-                // new DataTable("#tablaPersonas",{
-                //     data: responseData,
-                //     columns: [
-                //         { title: "ID", data: "id" },
-                //         { title: "Nombre", data: "nombre" },
-                //         { title: "Apellido Paterno", data: "apellidoPaterno" },
-                //         { title: "Apellido Materno", data: "apellidoMaterno" },
-                //         { title: "Identificación", data: "identificacion" }
-                //         // Agrega columnas según tu estructura de datos
-                //     ],
-                //     columnDefs: [{
-                //         targets:5,
-                //         data:null,
-                //         defaultContent:
-                //         `
-                //             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalPersonas" onclick="AbrirModal('Modificar', '${responseData.id}|${responseData.nombre}|${responseData.apellidoPaterno}|${responseData.apellidoMaterno}|${responseData.identificacion}');">Modificar</button>
-                //             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalPersonas" onclick="AbrirModal('Borrar',${responseData.id});">Borrar</button>
-                //         `
-                //     }],
-                //     language: {
-                //         url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-MX.json'
-                //     }
-                // });
-                
-                
-                const tbodyTablaPersonas = document.getElementById("tbodyTablaPersonas");
-                //tbodyTablaPersonas.innerHTML = "";
-                for (let item of responseData) {
-                    tbodyTablaPersonas.innerHTML +=
-                        `
-                                <tr>
-                                    <td>${item.id}</td>
-                                    <td>${item.nombre}</td>
-                                    <td>${item.apellidoPaterno}</td>
-                                    <td>${item.apellidoMaterno}</td>
-                                    <td>${item.identificacion}</td>
-                                    <td>
-                                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalPersonas" onclick="AbrirModal('Modificar', '${item.id}|${item.nombre}|${item.apellidoPaterno}|${item.apellidoMaterno}|${item.identificacion}');">Modificar</button>
-                                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalPersonas" onclick="AbrirModal('Borrar',${item.id});">Borrar</button>
-                                    </td>
-                                </tr>
-                        `;
-                }
-
-                new DataTable('#tablaPersonas', {
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-MX.json'
-                    }
-                });
-
-            })
-            .catch(error => {
-                console.error("Ha ocurrido un error en la operación");
-            });
-    }
-
-    const NuevoDataTable = () => {
         $("#tablaPersonas").DataTable({
             ajax: {
                 url: Url + "/Persona/ListaPersonas",
@@ -438,7 +389,7 @@
                 { data: "nombre" },
                 { data: "apellidoPaterno" },
                 { data: "apellidoMaterno" },
-                {data:"identificacion"},
+                { data: "identificacion"},
                 {
                     data: null,
                     render: function (item, type, row) {

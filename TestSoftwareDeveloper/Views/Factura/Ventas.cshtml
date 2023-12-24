@@ -21,20 +21,20 @@
         margin-top: 2%;
     }
 
-    #nombreRequerido {
+    #fechaRequerido {
         margin-left: 23%;
         color: #EA4242;
         display: none;
     }
 
-    #aPaternoRequerido {
+    #montoRequerido {
         margin-left: 23%;
         color: #EA4242;
         display: none;
     }
 
-    #identificacionRequerido {
-        margin-left: 22%;
+    #personaRequerido {
+        margin-left: 2%;
         color: #EA4242;
         display: none;
     }
@@ -43,6 +43,11 @@
         margin-top: 2%;
         color: #EA4242;
         display: none;
+    }
+
+    .alertMensajeLetra {
+        font-weight: bold;
+        font-size: larger;
     }
 
     .inputRequerido {
@@ -55,51 +60,96 @@
         display: none;
     }
 
+    #txtPersona{
+        margin-right:2%;
+    }
+
+    #labelAsterisco{
+        color: #EA4242;
+    }
+
 </style>
 
-<div class="modal fade" tabindex="-1" id="modalFacturas">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="modalFacturas1" aria-hidden="true" aria-labelledby="modalTitulo1" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalTitulo">Modal title</h5>
+                <h1 class="modal-title fs-5" id="modalTitulo1">Modal 1</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <div class="contenedorDivsModal">
+
                     <div class="modalBodyContainers">
-                        <label class="col-3">Id:</label><input type="text" class="form-control" placeholder="..." readonly id="txtId">
+                        <label class="col-2">Id:</label><input type="text" class="form-control" placeholder="..." readonly id="txtId">
                     </div>
 
                     <div class="modalBodyContainers">
-                        <label class="col-3">Fecha: *</label>
-                        <input type="datetime-local" class="form-control" placeholder="..." id="txtFecha"/>
+                        <label class="col-2">Fecha: <label id="labelAsterisco">*</label></label>
+                        <input type="datetime-local" min="1990-01-01T00:00" class="form-control" placeholder="..." id="txtFecha" oninput="CampoObligatorio(event,this.id,'fechaRequerido');"/>
                     </div>
                     <label id="fechaRequerido">La fecha es requerida</label>
 
                     <div class="modalBodyContainers">
-                        <label class="col-3">A. Paterno: *</label><input type="text" class="form-control" placeholder="..." id="txtAPaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'aPaternoRequerido');" />
+                        <label class="col-2">Monto: <label id="labelAsterisco">*</label></label><input type="number" class="form-control" placeholder="..." id="txtMonto" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'montoRequerido');" />
                     </div>
-                    <label id="aPaternoRequerido">El apellido paterno es requerido</label>
+                    <label id="montoRequerido">El monto es requerido</label>
 
                     <div class="modalBodyContainers">
-                        <label class="col-3">A. Materno:</label><input type="text" class="form-control" placeholder="..." id="txtAMaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="ValidacionPegado(event);" />
+                        <label class="col-2">Persona: <label id="labelAsterisco">*</label></label>
+                        <input class="form-control" placeholder="..." readonly id="txtPersona">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFacturas2" onclick="ListaPersonas();">Buscar</button>
                     </div>
-
-                    <div class="modalBodyContainers">
-                        <label class="col-3">Identificación: *</label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="NoEspaciosPrimero(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');" />
-                    </div>
-                    <label id="identificacionRequerido">La identificación es requerida</label>
+                    <label id="personaRequerido">La persona es requerida</label>
 
                 </div>
 
                 <label id="camposCompletos">Ingresar los campos obligatorios</label>
                 <label id="mensajeError2"></label>
 
-                <h4 id="h4Borrar">¿Estás seguro de borrar el registro?<br />Se borrarán todas las facturas de la persona</h4>
+                <h4 id="h4Borrar">¿Estás seguro de borrarla?</h4>
+
             </div>
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCerrarModal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnConfirmar" onclick="EjecutarAccion();">Save changes</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalFacturas2" aria-hidden="true" aria-labelledby="modalTitulo2" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="modalTitulo2">Seleccionar persona</h1>
+                <button type="button" class="btn-close" data-bs-target="#modalFacturas1" data-bs-toggle="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <table id="tablaPersonas" class="table table-hover table-bordered table-striped" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Identificación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Identificación</th>
+                            <th>Acción</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-target="#modalFacturas1" data-bs-toggle="modal">Regresar</button>
             </div>
         </div>
     </div>
@@ -108,13 +158,15 @@
 
 <h1>Ventas</h1>
 
+<div id="liveAlertPlaceholder"></div>
+
 <div class="container">
 
     <div class="nuevaContainer">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFacturas">Registrar</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFacturas1" onclick="AbrirModal('Registrar',null);">Registrar</button>
     </div>
 
-    <table id="tablaFacturas" class="table table-hover table-bordered" style="width:100%">
+    <table id="tablaFacturas" class="table table-hover table-bordered table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>Id</th>
@@ -124,8 +176,6 @@
                 <th>Acción</th>
             </tr>
         </thead>
-        @* <tbody id="tbodyTablaFacturas">
-        </tbody> *@
         <tfoot>
             <tr>
                 <th>Id</th>
@@ -141,9 +191,199 @@
 <script src="/js/Url.js"></script>
 
 <script>
+
     const CargarPagina = () => {
         ListaFacturas();
     }
+
+    const AppendAlert = (mensaje, tipo) => {
+
+        const liveAlertPlaceholder = document.getElementById("liveAlertPlaceholder");
+        const idUnico = Date.now().toString() + Math.random().toString();
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = [
+            `<div class="alert alert-${tipo} alert-dismissible text-center" role="alert" id="${idUnico}">`,
+            `   <div class="alertMensajeLetra">${mensaje}</div>`,
+            '</div>'
+        ].join('');
+        liveAlertPlaceholder.append(wrapper);
+        setTimeout(() => {
+            document.getElementById(idUnico).remove();
+        }, 8000);
+    }
+
+    const NoMayorA = (event, cantidad) => {
+        if (event.target.value.length >= cantidad - 1) {
+            event.preventDefault();
+        }
+    }
+
+    const CampoObligatorio = (event, idInput, idIdentificador) => {
+        if (event.target.value.length === 0) {
+            document.getElementById(idIdentificador).style.display = "block";
+            document.getElementById(idInput).classList.add("inputRequerido");
+        } else {
+            document.getElementById(idIdentificador).style.display = "none";
+            document.getElementById(idInput).classList.remove("inputRequerido");
+        }
+    }
+
+    const AbrirModal = (titulo, item) => {
+
+        document.getElementById("txtFecha").classList.remove("inputRequerido");
+        document.getElementById("txtMonto").classList.remove("inputRequerido");
+        document.getElementById("txtPersona").classList.remove("inputRequerido");
+
+
+        const camposCompletos = document.getElementById("camposCompletos");
+        const fechaRequerido = document.getElementById("fechaRequerido");
+        const montoRequerido = document.getElementById("montoRequerido");
+        const personaRequerido = document.getElementById("personaRequerido");
+        const mensajeError2 = document.getElementById("mensajeError2");
+
+        camposCompletos.style.display = "none";
+        fechaRequerido.style.display = "none";
+        montoRequerido.style.display = "none";
+        personaRequerido.style.display = "none";
+        mensajeError2.style.display = "none";
+
+        const txtId = document.getElementById("txtId");
+        const txtFecha = document.getElementById("txtFecha");
+        const txtMonto = document.getElementById("txtMonto");
+        const txtPersona = document.getElementById("txtPersona");
+
+        const contenedorDivsModal = document.querySelector(".contenedorDivsModal");
+        const h4Borrar = document.getElementById("h4Borrar");
+
+        if (titulo === "Registrar") {
+            contenedorDivsModal.style.display = "block";
+            h4Borrar.style.display = "none";
+            txtId.value = "Nueva factura";
+            txtFecha.value = "";
+            txtMonto.value = "";
+            txtPersona.value = "";
+        } else {
+            if (titulo === "Modificar") {
+                contenedorDivsModal.style.display = "block";
+                h4Borrar.style.display = "none";
+                const datosPersona = item.split("|");
+                txtId.value = datosPersona[0];
+                txtFecha.value = datosPersona[1];
+                txtMonto.value = datosPersona[2];
+                txtPersona.value = datosPersona[4].trim() + " " + datosPersona[5].trim() + " " + datosPersona[6].trim();
+                txtPersona.setAttribute("data-idpersona", datosPersona[3]);
+            } else {
+                console.log(item);
+                txtId.value = item;
+                contenedorDivsModal.style.display = "none";
+                h4Borrar.style.display = "block";
+            }
+        }
+
+        const modalTitulo1 = document.getElementById("modalTitulo1");
+        const btnConfirmar = document.getElementById("btnConfirmar");
+        modalTitulo1.innerText = titulo;
+        btnConfirmar.innerText = titulo;
+    }
+
+    const EjecutarAccion = () => {
+
+        const accion = document.getElementById("modalTitulo1").textContent;
+        const txtId = document.getElementById("txtId");
+        const txtFecha = document.getElementById("txtFecha");
+        const txtMonto = document.getElementById("txtMonto");
+        const txtPersona = document.getElementById("txtPersona");
+
+
+        if (txtFecha.value === "" || txtMonto.value === "" || txtPersona.value === "") {
+            if (accion === "Registrar" || accion === "Modificar") {
+                
+                if (txtFecha.value === "") {
+                    document.getElementById("fechaRequerido").style.display="block";
+                    txtFecha.classList.add("inputRequerido");
+                }
+                if (txtMonto.value === "") {
+                    document.getElementById("montoRequerido").style.display = "block";
+                    txtMonto.classList.add("inputRequerido");
+                }
+                if (txtPersona.value === "") {
+                    document.getElementById("personaRequerido").style.display = "block";
+                    txtPersona.classList.add("inputRequerido");
+                }
+
+                const camposCompletos = document.getElementById("camposCompletos");
+                camposCompletos.style.display = "block";
+                return;
+            }
+        } else {
+            if (accion === "Registrar" || accion == "Modificar") {
+                camposCompletos.style.display = "none";
+            }
+        }
+
+        if (accion === "Borrar") {
+            fetch(Url + `/Factura/BorrarFactura/${txtId.value}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al borrar el registro");
+                    }
+                    return response.json();
+                })
+                .then(response => {
+                    AppendAlert(response, "success");
+                    document.getElementById("btnCerrarModal").click();
+                    $("#tablaFacturas").DataTable().ajax.reload();
+
+                })
+                .catch(error => {
+                    console.error("Ha ocurrido une error", error);
+                })
+        } else {
+
+            let validacionId = 0;
+            if (accion === "Modificar") {
+                validacionId = txtId.value
+            }
+            const factura = {
+                id: validacionId,
+                fecha: txtFecha.value,
+                monto: txtMonto.value,
+                idPersona: txtPersona.getAttribute("data-idpersona")
+            };
+            fetch(Url + "/Factura/RegistrarFactura", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(factura)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error al ${accion}`);
+                    }
+                    return response.json();
+                })
+                .then(response => {
+
+                    if (response.id === 1 || response.id === 2) {
+                        AppendAlert(response.nombre, "success");
+                        document.getElementById("btnCerrarModal").click();
+                        $("#tablaFacturas").DataTable().ajax.reload();
+                    } else {
+                        const mensajeError2 = document.getElementById("mensajeError2");
+                        mensajeError2.textContent = response.nombre;
+                        mensajeError2.style.display = "block";
+                    }
+
+                })
+                .catch(error => {
+                    console.error("Ha ocurrido un error", error);
+                })
+        }
+    }
+
     const ListaFacturas = () => {
         $("#tablaFacturas").DataTable({
             ajax: {
@@ -153,15 +393,26 @@
             },
             columns: [
                 { data: "id" },
-                { data: "fecha" },
+                { data: null,
+                    render: function(item,type,row){
+                        let fecha = new Date(item.fecha);
+                        let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                        let fechaFormateada = fecha.toLocaleDateString("es-MX", options);
+                        return fechaFormateada;
+                    }    
+                },
                 { data: "monto" },
-                { data: "nombrePersona" },
+                { data: null,
+                    render: function (item, type, row) {
+                        return item.nombrePersona.trim() + " " + item.aPaternoPersona.trim() + " " + item.aMaternoPersona.trim()
+                    }
+                },
                 {
                     data: null,
-                    render: function (data, type, row) {
+                    render: function (item, type, row) {
                         return `
-                                    <button class="btn btn-warning">Modificar</button>
-                                    <button class="btn btn-danger">Borrar</button>
+                                    <button class="btn btn-warning" onclick="AbrirModal('Modificar', '${item.id}|${item.fecha}|${item.monto}|${item.idPersona}|${item.nombrePersona.trim()}|${item.aPaternoPersona.trim()}|${item.aMaternoPersona.trim()}');" data-bs-toggle="modal" data-bs-target="#modalFacturas1">Modificar</button>
+                                    <button class="btn btn-danger" onclick="AbrirModal('Borrar',${item.id});" data-bs-target="#modalFacturas1" data-bs-toggle="modal">Borrar</button>
                                `
                     }
                 }
@@ -171,5 +422,55 @@
             }
         });
     }
+
+    const ListaPersonas = () => {
+        if (!$.fn.DataTable.isDataTable('#tablaPersonas')) {
+            $("#tablaPersonas").DataTable({
+                ajax: {
+                    url: Url + "/Persona/ListaPersonas",
+                    type: "GET",
+                    dataSrc: ""
+                },
+                columns: [
+                    { data: "id" },
+                    {
+                        data: null,
+                        render: function (item, type, row) {
+                            return item.nombre.trim() + " " + item.apellidoPaterno.trim() + " " + item.apellidoMaterno.trim()
+                        }
+                    },
+                    { data: "identificacion" },
+                    {
+                        data: null,
+                        render: function (item, type, row) {
+                            return `
+                                    <button onclick="SeleccionPersona('${item.id}|${item.nombre}|${item.apellidoPaterno}|${item.apellidoMaterno}');" class="btn btn-primary" data-bs-target="#modalFacturas1" data-bs-toggle="modal">Seleccionar</button>
+                               `
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-MX.json'
+                }
+            });
+        }else{
+            $("#tablaPersonas").DataTable().ajax.reload();
+        }
+    }
+
+    const SeleccionPersona = (item) => {
+        let datosPersona = item.split("|");
+        const txtPersona = document.getElementById("txtPersona");
+        txtPersona.setAttribute("data-idpersona", datosPersona[0]);
+        txtPersona.value = datosPersona[1].trim() + " " + datosPersona[2].trim() + " " + datosPersona[3].trim();
+        if (txtPersona.value !== "") {
+            document.getElementById("personaRequerido").style.display = "none";
+            txtPersona.classList.remove("inputRequerido");
+        } else {
+            document.getElementById("personaRequerido").style.display = "block";
+            txtPersona.classList.add("inputRequerido");
+        }
+    }
+
     window.onload = CargarPagina;
 </script>
