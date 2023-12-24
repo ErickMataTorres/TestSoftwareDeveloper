@@ -1,71 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Directorio";
 }
-<style>
-    h1 {
-        text-align: center;
-    }
 
-    .nuevaContainer {
-        display: flex;
-        justify-content: flex-end;
-    }
+<link rel="stylesheet" href="/css/Directorio.css"/>
 
-    .modalBodyContainers {
-        display: flex;
-        align-items: center;
-    }
-
-    .contenedorDivsModal div:not(:first-child) {
-        margin-top: 2%;
-    }
-    .alertSuccess{
-        display:none;
-    }
-
-    .alertMensajeLetra{
-        font-weight:bold;
-        font-size:larger;
-    }
-    #nombreRequerido{
-        margin-left: 23%;
-        color: #EA4242;
-        display:none;
-    }
-
-    #aPaternoRequerido{
-        margin-left:23%;
-        color: #EA4242;
-        display:none;
-    }
-
-    #identificacionRequerido{
-        margin-left:22%;
-        color: #EA4242;
-        display:none;
-    }
-    #camposCompletos{
-        margin-top:2%;
-        color: #EA4242;
-        display:none;
-    }
-    .inputRequerido{
-        border: 2px solid #EA4242;
-    }
-    #mensajeError2{
-        margin-top:2%;
-        color: #EA4242;
-        display:none;
-    }
-
-    #labelAsterisco {
-        color: #EA4242;
-    }
-</style>
 <h1>Directorio</h1>
 
 <div id="liveAlertPlaceholder"></div>
-
 <div class="container">
     <div class="nuevaContainer">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalPersonas" onclick="AbrirModal('Registrar', null);">Registrar</button>
@@ -81,8 +22,6 @@
                 <th>Acción</th>
             </tr>
         </thead>
-@*         <tbody id="tbodyTablaPersonas">
-        </tbody> *@
         <tfoot>
             <tr>
                 <th>Id</th>
@@ -95,7 +34,6 @@
         </tfoot>
     </table>
 </div>
-
 <div class="modal fade" tabindex="-1" id="modalPersonas" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -108,32 +46,25 @@
                     <div class="modalBodyContainers">
                         <label class="col-3">Id:</label><input type="text" class="form-control" placeholder="..." readonly id="txtId">
                     </div>
-
                     <div class="modalBodyContainers">
                         <label class="col-3">Nombre: <label id="labelAsterisco">*</label></label>
                         <input type="text" class="form-control" placeholder="..." id="txtNombre" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event, 50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'nombreRequerido');" />
                     </div>
-                    <label id="nombreRequerido">El nombre es requerido</label>
-                    
+                    <label id="nombreRequerido">El nombre es requerido</label>            
                     <div class="modalBodyContainers">
                         <label class="col-3">A. Paterno: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtAPaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'aPaternoRequerido');" />
                     </div>
                     <label id="aPaternoRequerido">El apellido paterno es requerido</label>
-
                     <div class="modalBodyContainers">
                         <label class="col-3">A. Materno:</label><input type="text" class="form-control" placeholder="..." id="txtAMaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="ValidacionPegado(event);" />
                     </div>
-
                     <div class="modalBodyContainers">
                         <label class="col-3">Identificación: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="SoloLetrasYNumeros(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');" />
                     </div>
                         <label id="identificacionRequerido">La identificación es requerida</label>
-
-                </div>
-                    
+                </div>                    
                 <label id="camposCompletos">Ingresar los campos obligatorios</label>
                 <label id="mensajeError2"></label>
-
                 <h4 id="h4Borrar">¿Estás seguro de borrar el registro?<br />Se borrarán todas las facturas de la persona</h4>
             </div>
             <div class="modal-footer">
@@ -143,240 +74,47 @@
         </div>
     </div>
 </div>
-
 <script src="/js/Url.js"></script>
 <script>
-
     const CargarPagina = () => {
         ListaPersonas();
-        
     }
-
-    const AppendAlert = (mensaje, tipo) => {
-
-        const liveAlertPlaceholder = document.getElementById("liveAlertPlaceholder");
-        const idUnico = Date.now().toString() + Math.random().toString();
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = [
-            `<div class="alert alert-${tipo} alert-dismissible text-center" role="alert" id="${idUnico}">`,
-            `   <div class="alertMensajeLetra">${mensaje}</div>`,
-            '</div>'
-        ].join('');
-        liveAlertPlaceholder.append(wrapper);
-        setTimeout(() => {
-            document.getElementById(idUnico).remove();
-        }, 8000);
-    }
-
-    const CampoObligatorio = (event, idInput, idIdentificador) => {
-        if (event.target.value.length === 0) {
-            document.getElementById(idIdentificador).style.display = "block";
-            document.getElementById(idInput).classList.add("inputRequerido");
-        }else{
-            document.getElementById(idIdentificador).style.display = "none";
-            document.getElementById(idInput).classList.remove("inputRequerido");
-        }
-    }
-
-    const NoMayorA = (event, cantidad) => {
-        if (event.target.value.length >= cantidad-1) {
-            event.preventDefault();
-        }
-    }
-
-    const NoEspaciosPrimero = (event) => {
-        if (event.target.value === "") {
-            if (event.code === "Space") {
-                event.preventDefault();
-            }
-        }
-    }
-
-    const SoloLetras = (event) => {
-        const soloLetras = /^[a-zA-ZñÑáéíóú]+$/;
-        if (event.target.value=== "") {
-            if (event.code === "Space") {
-                event.preventDefault();
-                return;
-            }
-        }
-        if (!soloLetras.test(event.key) && event.code !== "Space") {
-            event.preventDefault();
-        }
-    }
-
-    const SoloLetrasYNumeros = (event) => {
-        const soloLetrasYNumeros =/^[a-zA-Z0-9]+$/;
-        if (event.target.value === "") {
-            if (event.code === "Space") {
-                event.preventDefault();
-                return;
-            }
-        }
-        if (!soloLetrasYNumeros.test(event.key)) {
-            event.preventDefault();
-        }
-    }
-
     const AbrirModal = (titulo, item) => {
-
-        document.getElementById("txtNombre").classList.remove("inputRequerido");
-        document.getElementById("txtAPaterno").classList.remove("inputRequerido");
-        document.getElementById("txtIdentificacion").classList.remove("inputRequerido");
-
-
-        const camposCompletos = document.getElementById("camposCompletos");
-        const nombreRequerido = document.getElementById("nombreRequerido");
-        const aPaternoRequerido = document.getElementById("aPaternoRequerido");
-        const identificacionRequerido=document.getElementById("identificacionRequerido");
-        const mensajeError2 = document.getElementById("mensajeError2");
-
-        camposCompletos.style.display = "none";
-        nombreRequerido.style.display="none";
-        aPaternoRequerido.style.display = "none";
-        identificacionRequerido.style.display = "none";
-        mensajeError2.style.display = "none";
-
-        const txtId = document.getElementById("txtId");
-        const txtNombre = document.getElementById("txtNombre");
-        const txtAPaterno = document.getElementById("txtAPaterno");
-        const txtAMaterno = document.getElementById("txtAMaterno");
-        const txtIdentificacion = document.getElementById("txtIdentificacion");
-
-        const contenedorDivsModal = document.querySelector(".contenedorDivsModal");
-        const h4Borrar = document.getElementById("h4Borrar");
-
+        OcultarRequeridos();
         if (titulo === "Registrar") {
-            contenedorDivsModal.style.display = "block";
-            h4Borrar.style.display = "none";
-            txtId.value = "Nueva persona";
-            txtNombre.value = "";
-            txtAPaterno.value = "";
-            txtAMaterno.value = "";
-            txtIdentificacion.value = "";
+            ValidarTituloRegistrar();
         } else {
             if (titulo === "Modificar") {
-                contenedorDivsModal.style.display = "block";
-                h4Borrar.style.display = "none";
-                const arrayData = item.split("|");
-                txtId.value = arrayData[0];
-                txtNombre.value = arrayData[1];
-                txtAPaterno.value = arrayData[2];
-                txtAMaterno.value = arrayData[3];
-                txtIdentificacion.value = arrayData[4];
+                ValidarTituloModificar(item);
             } else {
-                txtId.value = item;
-                contenedorDivsModal.style.display = "none";
-                h4Borrar.style.display = "block";
+                ValidarTituloBorrar(item);
             }
         }
-
-        const modalTitulo = document.getElementById("modalTitulo");
-        const btnConfirmar = document.getElementById("btnConfirmar");
-        modalTitulo.innerText = titulo;
-        btnConfirmar.innerText = titulo;
+        NombresTitulos(titulo);
     }
-
-    const EjecutarAccion = () => {
-
+    const EjecutarAccion = () => {   
         const accion = document.getElementById("modalTitulo").textContent;
         const txtId = document.getElementById("txtId");
         const txtNombre = document.getElementById("txtNombre");
         const txtAPaterno = document.getElementById("txtAPaterno");
         const txtAMaterno = document.getElementById("txtAMaterno");
         const txtIdentificacion = document.getElementById("txtIdentificacion");
-        
         if (txtNombre.value === "" || txtAPaterno.value === "" || txtIdentificacion.value === "") {
-            const camposCompletos = document.getElementById("camposCompletos");
             if (accion === "Registrar" || accion === "Modificar") {
-
-                if (txtNombre.value === "") {
-                    document.getElementById("nombreRequerido").style.display = "block";
-                    txtNombre.classList.add("inputRequerido");
-                }
-                if (txtAPaterno.value === "") {
-                    document.getElementById("aPaternoRequerido").style.display = "block";
-                    txtAPaterno.classList.add("inputRequerido");
-                }
-                if (txtIdentificacion.value === "") {
-                    document.getElementById("identificacionRequerido").style.display = "block";
-                    txtIdentificacion.classList.add("inputRequerido");
-                }
-
-                camposCompletos.style.display = "block";
+                ValidarRequeridosAlEjecutar(txtNombre, txtAPaterno, txtIdentificacion);
                 return;
             }
         } else {
-            if(accion==="Registrar"||accion=="Modificar"){
-                camposCompletos.style.display = "none";
+            if (accion === "Registrar" || accion == "Modificar") {
+                document.getElementById("camposCompletos").style.display = "none";
             }
         }
-
         if (accion === "Borrar") {
-            fetch(Url + `/Persona/BorrarPersona/${txtId.value}`, {
-                method: "DELETE"
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error al borrar el registro");
-                    }
-                    return response.json();
-                })
-                .then(response => {
-                    AppendAlert(response, "success");
-                    document.getElementById("btnCerrarModal").click();
-                    $("#tablaPersonas").DataTable().ajax.reload();
-                    // ListaPersonas();
-                    
-                })
-                .catch(error => {
-                    console.error("Ha ocurrido une error", error);
-                })
+            HttpDeleteBorrar(txtId.value);
         } else {
-
-            let validacionId = 0;
-            if (accion === "Modificar") {
-                validacionId=txtId.value
-            }
-            const persona = {
-                id: validacionId,
-                nombre:txtNombre.value.trim().toUpperCase(),
-                apellidoPaterno:txtAPaterno.value.trim().toUpperCase(),
-                apellidoMaterno:txtAMaterno.value.trim().toUpperCase(),
-                identificacion:txtIdentificacion.value.trim().toUpperCase()
-            };
-            fetch(Url + "/Persona/RegistrarPersona", {
-                method: "POST",
-                headers: {
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(persona)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error al ${accion}`);
-                    }
-                    return response.json();
-                })
-                .then(response=>{
-
-                    if (response.id === 2||response.id===5) {
-                        const mensajeError2 = document.getElementById("mensajeError2");
-                        mensajeError2.textContent = response.nombre;
-                        mensajeError2.style.display = "block";
-                    } else {
-                        AppendAlert(response.nombre, "success");
-                        document.getElementById("btnCerrarModal").click();
-                        $("#tablaPersonas").DataTable().ajax.reload();
-                    }
-
-                })
-                .catch(error => {
-                    console.error("Ha ocurrido un error", error);
-                })
+            HttpPostRegistrarModificar(accion, txtId.value);
         }
-    }    
-
+    }
     const ListaPersonas = () => {
         $("#tablaPersonas").DataTable({
             ajax: {
@@ -389,7 +127,7 @@
                 { data: "nombre" },
                 { data: "apellidoPaterno" },
                 { data: "apellidoMaterno" },
-                { data: "identificacion"},
+                { data: "identificacion" },
                 {
                     data: null,
                     render: function (item, type, row) {
@@ -405,7 +143,182 @@
             }
         });
     }
+    const HttpDeleteBorrar = (id) => {
+        fetch(Url + `/Persona/BorrarPersona/${id}`, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al borrar el registro");
+                }
+                return response.json();
+            })
+            .then(response => {
+                AppendAlert(response, "success");
+                document.getElementById("btnCerrarModal").click();
+                $("#tablaPersonas").DataTable().ajax.reload();
+            })
+            .catch(error => {
+                console.error("Ha ocurrido une error", error);
+            })
+    }
+    const HttpPostRegistrarModificar = (accion, txtIdValue) => {
+        let validacionId = 0;
+        if (accion === "Modificar") {
+            validacionId = txtIdValue;
+        }
+        const persona = {
+            id: validacionId,
+            nombre: document.getElementById("txtNombre").value.trim().toUpperCase(),
+            apellidoPaterno: document.getElementById("txtAPaterno").value.trim().toUpperCase(),
+            apellidoMaterno: document.getElementById("txtAMaterno").value.trim().toUpperCase(),
+            identificacion: document.getElementById("txtIdentificacion").value.trim().toUpperCase()
+        };
+        fetch(Url + "/Persona/RegistrarPersona", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(persona)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al ${accion}`);
+                }
+                return response.json();
+            })
+            .then(response => {
 
+                if (response.id === 2 || response.id === 5) {
+                    const mensajeError2 = document.getElementById("mensajeError2");
+                    mensajeError2.textContent = response.nombre;
+                    mensajeError2.style.display = "block";
+                } else {
+                    AppendAlert(response.nombre, "success");
+                    document.getElementById("btnCerrarModal").click();
+                    $("#tablaPersonas").DataTable().ajax.reload();
+                }
+            })
+            .catch(error => {
+                console.error("Ha ocurrido un error", error);
+            })
+    }
+
+    const ValidarRequeridosAlEjecutar = (txtNombre, txtAPaterno, txtIdentificacion) => {
+        if (txtNombre.value === "") {
+            document.getElementById("nombreRequerido").style.display = "block";
+            txtNombre.classList.add("inputRequerido");
+        }
+        if (txtAPaterno.value === "") {
+            document.getElementById("aPaternoRequerido").style.display = "block";
+            txtAPaterno.classList.add("inputRequerido");
+        }
+        if (txtIdentificacion.value === "") {
+            document.getElementById("identificacionRequerido").style.display = "block";
+            txtIdentificacion.classList.add("inputRequerido");
+        }
+        document.getElementById("camposCompletos").style.display = "block";
+    }
+
+    const AppendAlert = (mensaje, tipo) => {
+        const liveAlertPlaceholder = document.getElementById("liveAlertPlaceholder");
+        const idUnico = Date.now().toString() + Math.random().toString();
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = [
+            `<div class="alert alert-${tipo} alert-dismissible text-center" role="alert" id="${idUnico}">`,
+            `   <div class="alertMensajeLetra">${mensaje}</div>`,
+            '</div>'
+        ].join('');
+        liveAlertPlaceholder.append(wrapper);
+        setTimeout(() => {
+            document.getElementById(idUnico).remove();
+        }, 8000);
+    }
+    const CampoObligatorio = (event, idInput, idIdentificador) => {
+        if (event.target.value.length === 0) {
+            document.getElementById(idIdentificador).style.display = "block";
+            document.getElementById(idInput).classList.add("inputRequerido");
+        } else {
+            document.getElementById(idIdentificador).style.display = "none";
+            document.getElementById(idInput).classList.remove("inputRequerido");
+        }
+    }
+    const NoMayorA = (event, cantidad) => {
+        if (event.target.value.length >= cantidad - 1) {
+            event.preventDefault();
+        }
+    }
+    const NoEspaciosPrimero = (event) => {
+        if (event.target.value === "") {
+            if (event.code === "Space") {
+                event.preventDefault();
+            }
+        }
+    }
+    const SoloLetras = (event) => {
+        const soloLetras = /^[a-zA-ZñÑáéíóú]+$/;
+        if (event.target.value === "") {
+            if (event.code === "Space") {
+                event.preventDefault();
+                return;
+            }
+        }
+        if (!soloLetras.test(event.key) && event.code !== "Space") {
+            event.preventDefault();
+        }
+    }
+    const SoloLetrasYNumeros = (event) => {
+        const soloLetrasYNumeros = /^[a-zA-Z0-9]+$/;
+        if (event.target.value === "") {
+            if (event.code === "Space") {
+                event.preventDefault();
+                return;
+            }
+        }
+        if (!soloLetrasYNumeros.test(event.key)) {
+            event.preventDefault();
+        }
+    }
+    const OcultarRequeridos = () => {
+        document.getElementById("camposCompletos").style.display = "none";
+        document.getElementById("nombreRequerido").style.display = "none";
+        document.getElementById("aPaternoRequerido").style.display = "none";
+        document.getElementById("identificacionRequerido").style.display = "none";
+        document.getElementById("mensajeError2").style.display = "none";
+
+        document.getElementById("txtNombre").classList.remove("inputRequerido");
+        document.getElementById("txtAPaterno").classList.remove("inputRequerido");
+        document.getElementById("txtIdentificacion").classList.remove("inputRequerido");
+    }
+    const ValidarTituloRegistrar = () => {
+        document.querySelector(".contenedorDivsModal").style.display = "block";
+        document.getElementById("h4Borrar").style.display = "none";
+        document.getElementById("txtId").value = "Nueva persona";
+        document.getElementById("txtNombre").value = "";
+        document.getElementById("txtAPaterno").value = "";
+        document.getElementById("txtAMaterno").value = "";
+        document.getElementById("txtIdentificacion").value = "";
+    }
+    const ValidarTituloModificar = (item) => {
+        document.querySelector(".contenedorDivsModal").style.display = "block";
+        document.getElementById("h4Borrar").style.display = "none";
+        const arrayData = item.split("|");
+        document.getElementById("txtId").value = arrayData[0];
+        document.getElementById("txtNombre").value = arrayData[1];
+        document.getElementById("txtAPaterno").value = arrayData[2];
+        document.getElementById("txtAMaterno").value = arrayData[3];
+        document.getElementById("txtIdentificacion").value = arrayData[4];
+    }
+    const ValidarTituloBorrar = (item) => {
+        document.getElementById("txtId").value = item;
+        document.querySelector(".contenedorDivsModal").style.display = "none";
+        document.getElementById("h4Borrar").style.display = "block";
+    }
+    const NombresTitulos = (titulo) => {
+        const modalTitulo = document.getElementById("modalTitulo");
+        const btnConfirmar = document.getElementById("btnConfirmar");
+        modalTitulo.innerText = titulo;
+        btnConfirmar.innerText = titulo;
+    }
     window.onload = CargarPagina;
 </script>
-

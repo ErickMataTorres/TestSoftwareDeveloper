@@ -1,0 +1,65 @@
+﻿
+h1 {
+    text-align: center;
+}
+
+.nuevaContainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modalBodyContainers {
+    display: flex;
+    align-items: center;
+}
+
+.contenedorDivsModal div:not(:first-child) {
+    margin-top: 2%;
+}
+
+.alertSuccess {
+    display: none;
+}
+
+.alertMensajeLetra {
+    font-weight: bold;
+    font-size: larger;
+}
+
+#nombreRequerido {
+    margin-left: 23%;
+    color: #EA4242;
+    display: none;
+}
+
+#aPaternoRequerido {
+    margin-left: 23%;
+    color: #EA4242;
+    display: none;
+}
+
+#identificacionRequerido {
+    margin-left: 22%;
+    color: #EA4242;
+    display: none;
+}
+
+#camposCompletos {
+    margin-top: 2%;
+    color: #EA4242;
+    display: none;
+}
+
+.inputRequerido {
+    border: 2px solid #EA4242;
+}
+
+#mensajeError2 {
+    margin-top: 2%;
+    color: #EA4242;
+    display: none;
+}
+
+#labelAsterisco {
+    color: #EA4242;
+}
