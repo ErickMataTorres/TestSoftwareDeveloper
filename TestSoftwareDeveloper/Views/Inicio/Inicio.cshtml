@@ -1,7 +1,7 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Inicio";
 }
+@* ***************************************** Estilos CSS *************************************************@
 <style>
     .titulo{
         font-size:40px;
@@ -11,13 +11,22 @@
     }
 
 </style>
+@* ** *@
 
+@* Contenedor div con un titulo y un parrafo dentro *@
 <div class="text-center">
     <h1 class="titulo"><b>Bienvenido</b></h1>
     <p class="texto">Aplicación hecha con C# Asp.Net Core como backend, javascript como frontend, un poco de JQuery, se esta utilizando Bootstrap y Css para el diseño de la página y para la base de datos SQL Server.</p>
 </div>
-    <p class="titulo">Contenido:</p>
+@* ** *@
+
+@* Parrafo *@
+<p class="titulo">Contenido:</p>
+@* ** *@
+
+@* Lista desordenada con información en puntos dentro de ella en relación a esta aplicación web *@
 <ul class="texto">
     <li>Directorio: Vista para registrar, modificar, borrar, buscar personas, en lo cual se puede llevar un control y visualización de cada una, con la funcionalidad de que al borrar algún registro se borrarán también todas las facturas relacionadas con dicha persona.</li>
     <li>Ventas: Vista para registrar, modificar, borrar, buscar facturas. En esta vista tu podrás controlar las facturas para las personas ya registradas anteriormente en la vista Directorio.</li>
 </ul>
+@* ** *@

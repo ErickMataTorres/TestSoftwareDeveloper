@@ -3,14 +3,20 @@ using System.Data;
 
 namespace TestSoftwareDeveloper.Models
 {
+
+    // Clase Persona
     public class Persona
     {
+
+        // Propiedades para manejar la información de la persona
         public int Id { get; set; }
         public string? Nombre { get; set; }
         public string? ApellidoPaterno { get; set; }
         public string? ApellidoMaterno { get; set; }
         public string? Identificacion { get; set; }
+        // **
 
+        // Se manda llamar este método ya sea para registrar o modificar una persona en la base de datos a través de un procedimiento almacenado
         public Models.MensajeError Registrar()
         {
             Models.MensajeError mensajeError = new Models.MensajeError();
@@ -45,6 +51,9 @@ namespace TestSoftwareDeveloper.Models
             }
             return mensajeError;
         }
+        // **
+
+        // Se envía id para borrar una persona en la base de datos a través de un procedimiento almacenado
         public static string Borrar(int id)
         {
             string respuesta = string.Empty;
@@ -68,6 +77,10 @@ namespace TestSoftwareDeveloper.Models
             }
             return respuesta;
         }
+        // **
+
+        /* Se pide la información de la tabla personas a través de un procedimiento almacenado y se crea una lista que se devuelve en formato json para
+           mostrarselo al usuario */
         public static List<Persona> ListaPersonas()
         {
             SqlConnection conx = Models.ConexionSql.Conectar();
@@ -91,6 +104,9 @@ namespace TestSoftwareDeveloper.Models
             conx.Close();
             return l;
         }
+        // **
 
     }
+    // **
+
 }

@@ -3,8 +3,11 @@ using System.Data.SqlClient;
 
 namespace TestSoftwareDeveloper.Models
 {
+    // Clase Factura
     public class Factura
     {
+
+        // Propiedades de los datos de la factura para manejar la información
         public int Id { get; set; }
         public DateTime Fecha { get; set; }
         public double Monto { get; set; }
@@ -12,7 +15,9 @@ namespace TestSoftwareDeveloper.Models
         public string? NombrePersona { get; set; }
         public string? APaternoPersona { get; set; }
         public string? AMaternoPersona { get; set; }
+        //**
 
+        // Se manda llamar este método ya sea para registrar o modificar una factura en la base de datos a través de un procedimiento almacenado
         public Models.MensajeError Registrar()
         {
             Models.MensajeError mensajeError = new Models.MensajeError();
@@ -46,7 +51,9 @@ namespace TestSoftwareDeveloper.Models
             }
             return mensajeError;
         }
+        // **
 
+        // Se envía id para borrar una factura en la base de datos a través de un procedimiento almacenado
         public static string Borrar(int id)
         {
             string respuesta = string.Empty;
@@ -70,7 +77,10 @@ namespace TestSoftwareDeveloper.Models
             }
             return respuesta;
         }
+        // **
 
+        /* Se pide la información de la tabla facturas a través de un procedimiento almacenado y se crea una lista que se devuelve en formato json para
+           mostrarselo al usuario */
         public static List<Factura> ListaFacturas()
         {
             SqlConnection conx = Models.ConexionSql.Conectar();
@@ -96,6 +106,9 @@ namespace TestSoftwareDeveloper.Models
             conx.Close();
             return l;
         }
+        // **
 
     }
+    // **
+
 }

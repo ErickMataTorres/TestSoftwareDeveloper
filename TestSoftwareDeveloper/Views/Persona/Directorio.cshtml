@@ -2,15 +2,80 @@
     ViewData["Title"] = "Directorio";
 }
 
-<link rel="stylesheet" href="/css/Directorio.css"/>
+@* ************************************************** Estilos css ****************************************************** *@
+<style>
+    h1 {
+        text-align: center;
+    }
+    .nuevaContainer {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .modalBodyContainers {
+        display: flex;
+        align-items: center;
+    }
+    .contenedorDivsModal div:not(:first-child) {
+        margin-top: 2%;
+    }
+    .alertSuccess {
+        display: none;
+    }
+    .alertMensajeLetra {
+        font-weight: bold;
+        font-size: larger;
+    }
+    #nombreRequerido {
+        margin-left: 23%;
+        color: #EA4242;
+        display: none;
+    }
+    #aPaternoRequerido {
+        margin-left: 23%;
+        color: #EA4242;
+        display: none;
+    }
+    #identificacionRequerido {
+        margin-left: 22%;
+        color: #EA4242;
+        display: none;
+    }
+    #camposCompletos {
+        margin-top: 2%;
+        color: #EA4242;
+        display: none;
+    }
+    .inputRequerido {
+        border: 2px solid #EA4242;
+    }
+    #mensajeError2 {
+        margin-top: 2%;
+        color: #EA4242;
+        display: none;
+    }
+    #labelAsterisco {
+        color: #EA4242;
+    }
+</style>
+@* *************************************************************************************************** *@
 
+@* Título directorio *@
 <h1>Directorio</h1>
+@* ** *@
 
+@* Contenedor para mostrar mensajes de alert *@
 <div id="liveAlertPlaceholder"></div>
+@* ** *@
+
+@* Contenedor de el botón registrar y de la tabla *@
 <div class="container">
+    @* Contenedor donde esta el botón Registrar una nueva persona *@
     <div class="nuevaContainer">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalPersonas" onclick="AbrirModal('Registrar', null);">Registrar</button>
     </div>
+    @* ** *@
+
+    @* Tabla para mostrar las personas existentes *@
     <table id="tablaPersonas" class="table table-hover table-bordered table-striped" style="width:100%">
         <thead>
             <tr>
@@ -33,7 +98,12 @@
             </tr>
         </tfoot>
     </table>
+    @* ** *@
+
 </div>
+@* ** *@
+
+@* ************************************** Modal para administración de datos de una persona *************************************************** *@
 <div class="modal fade" tabindex="-1" id="modalPersonas" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -48,18 +118,18 @@
                     </div>
                     <div class="modalBodyContainers">
                         <label class="col-3">Nombre: <label id="labelAsterisco">*</label></label>
-                        <input type="text" class="form-control" placeholder="..." id="txtNombre" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event, 50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'nombreRequerido');" />
+                        <input type="text" class="form-control" placeholder="..." id="txtNombre" onkeypress="NoMayorA(event, 50); SoloLetras(event);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'nombreRequerido');" />
                     </div>
                     <label id="nombreRequerido">El nombre es requerido</label>            
                     <div class="modalBodyContainers">
-                        <label class="col-3">A. Paterno: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtAPaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'aPaternoRequerido');" />
+                        <label class="col-3">A. Paterno: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtAPaterno" onkeypress="NoMayorA(event,50); SoloLetras(event);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'aPaternoRequerido');" />
                     </div>
                     <label id="aPaternoRequerido">El apellido paterno es requerido</label>
                     <div class="modalBodyContainers">
-                        <label class="col-3">A. Materno:</label><input type="text" class="form-control" placeholder="..." id="txtAMaterno" onkeydown="SoloLetras(event);" onkeypress="NoMayorA(event,50);" onpaste="ValidacionPegado(event);" />
+                        <label class="col-3">A. Materno:</label><input type="text" class="form-control" placeholder="..." id="txtAMaterno" onkeypress="NoMayorA(event,50); SoloLetras(event);" onpaste="ValidacionPegado(event);" />
                     </div>
                     <div class="modalBodyContainers">
-                        <label class="col-3">Identificación: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeydown="SoloLetrasYNumeros(event);" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');" />
+                        <label class="col-3">Identificación: <label id="labelAsterisco">*</label></label><input type="text" class="form-control" placeholder="..." id="txtIdentificacion" onkeypress="NoMayorA(event,50); SoloLetrasYNumeros(event);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'identificacionRequerido');" />
                     </div>
                         <label id="identificacionRequerido">La identificación es requerida</label>
                 </div>                    
@@ -74,11 +144,21 @@
         </div>
     </div>
 </div>
+@* ** *@
+
+@* Importación de la variable Url para la Api *@
 <script src="/js/Url.js"></script>
+@* ** *@
+
+@* Código JavaScript *@
 <script>
+    // Método para mandar llamar en cuanto cargue la página
     const CargarPagina = () => {
         ListaPersonas();
     }
+    // **
+
+    // Abrir el modal con sus validaciones correspondientes para resetear las opciones o alertas cada vez que se abra
     const AbrirModal = (titulo, item) => {
         OcultarRequeridos();
         if (titulo === "Registrar") {
@@ -92,6 +172,9 @@
         }
         NombresTitulos(titulo);
     }
+    // **
+
+    // Ejecutar acción, es decir, enviar los datos a la api para registrar, modificar o borrar datos de la tabla
     const EjecutarAccion = () => {   
         const accion = document.getElementById("modalTitulo").textContent;
         const txtId = document.getElementById("txtId");
@@ -115,6 +198,10 @@
             HttpPostRegistrarModificar(accion, txtId.value);
         }
     }
+    // **
+
+    /* Lista de facturas donde se muestran todas facturas existentes a través de hacer la petición GET a la api
+       utilizando la librería datatable para la configuración de la tabla */
     const ListaPersonas = () => {
         $("#tablaPersonas").DataTable({
             ajax: {
@@ -143,6 +230,9 @@
             }
         });
     }
+    // **
+
+    // Envío del id a la api por HttpDelete para borrar a la persona con el id correspondiente
     const HttpDeleteBorrar = (id) => {
         fetch(Url + `/Persona/BorrarPersona/${id}`, {
             method: "DELETE"
@@ -162,6 +252,9 @@
                 console.error("Ha ocurrido une error", error);
             })
     }
+    // **
+
+    // HttpPost para el envío de datos para registrar o modificar una persona en la tabla con los datos que se ingresaron
     const HttpPostRegistrarModificar = (accion, txtIdValue) => {
         let validacionId = 0;
         if (accion === "Modificar") {
@@ -203,7 +296,9 @@
                 console.error("Ha ocurrido un error", error);
             })
     }
+    // **
 
+    // Validación para mostrar las advertencias de si los inputs estan vacíos al dar click en registrar
     const ValidarRequeridosAlEjecutar = (txtNombre, txtAPaterno, txtIdentificacion) => {
         if (txtNombre.value === "") {
             document.getElementById("nombreRequerido").style.display = "block";
@@ -219,7 +314,9 @@
         }
         document.getElementById("camposCompletos").style.display = "block";
     }
+    // **
 
+    // Mostrar alertas en el html cuando se ha ejecutado una acción, tanto HttpPost como HttpDelete
     const AppendAlert = (mensaje, tipo) => {
         const liveAlertPlaceholder = document.getElementById("liveAlertPlaceholder");
         const idUnico = Date.now().toString() + Math.random().toString();
@@ -234,6 +331,9 @@
             document.getElementById(idUnico).remove();
         }, 8000);
     }
+    // **
+
+    // Mostrar mensajes de datos requeridos que no se han ingresado y colorear el border en rojo del input correspondiente
     const CampoObligatorio = (event, idInput, idIdentificador) => {
         if (event.target.value.length === 0) {
             document.getElementById(idIdentificador).style.display = "block";
@@ -243,11 +343,17 @@
             document.getElementById(idInput).classList.remove("inputRequerido");
         }
     }
+    // **
+
+    // Método para restringir el ingreso de caracteres a la cantidad que necesites
     const NoMayorA = (event, cantidad) => {
         if (event.target.value.length >= cantidad - 1) {
             event.preventDefault();
         }
     }
+    // **
+
+    // Restringir el poner espacios a lo primero en el input antes que cualquier otro caracter para evitar el guardar espacios en blanco
     const NoEspaciosPrimero = (event) => {
         if (event.target.value === "") {
             if (event.code === "Space") {
@@ -255,6 +361,9 @@
             }
         }
     }
+    // **
+
+    // Permitir ingresar solo letras en el input
     const SoloLetras = (event) => {
         const soloLetras = /^[a-zA-ZñÑáéíóú]+$/;
         if (event.target.value === "") {
@@ -267,8 +376,11 @@
             event.preventDefault();
         }
     }
+    // **
+
+    // Permitir ingresar solo letras y número, sin permitir caracteres especiales
     const SoloLetrasYNumeros = (event) => {
-        const soloLetrasYNumeros = /^[a-zA-Z0-9]+$/;
+        const soloLetrasYNumeros = /[0-9a-zA-Z]/;
         if (event.target.value === "") {
             if (event.code === "Space") {
                 event.preventDefault();
@@ -279,6 +391,9 @@
             event.preventDefault();
         }
     }
+    // **
+
+    // Ocultar requeridos para resetear la configuración de validación en el método AbrirModal()
     const OcultarRequeridos = () => {
         document.getElementById("camposCompletos").style.display = "none";
         document.getElementById("nombreRequerido").style.display = "none";
@@ -290,6 +405,9 @@
         document.getElementById("txtAPaterno").classList.remove("inputRequerido");
         document.getElementById("txtIdentificacion").classList.remove("inputRequerido");
     }
+    // **
+
+    // Validar el titulo de registrar para aplicar la configuración necesaria para registrar una nueva persona en la tabla
     const ValidarTituloRegistrar = () => {
         document.querySelector(".contenedorDivsModal").style.display = "block";
         document.getElementById("h4Borrar").style.display = "none";
@@ -299,6 +417,9 @@
         document.getElementById("txtAMaterno").value = "";
         document.getElementById("txtIdentificacion").value = "";
     }
+    // **
+
+    // Validar el titulo de modificar para aplicar la configuración necesaria para modificar una persona en la tabla
     const ValidarTituloModificar = (item) => {
         document.querySelector(".contenedorDivsModal").style.display = "block";
         document.getElementById("h4Borrar").style.display = "none";
@@ -309,16 +430,28 @@
         document.getElementById("txtAMaterno").value = arrayData[3];
         document.getElementById("txtIdentificacion").value = arrayData[4];
     }
+    // **
+
+    // Validar el titulo de borrar para aplicar la configuración necesaria para borrar una persona en la tabla
     const ValidarTituloBorrar = (item) => {
         document.getElementById("txtId").value = item;
         document.querySelector(".contenedorDivsModal").style.display = "none";
         document.getElementById("h4Borrar").style.display = "block";
     }
+    // **
+
+    // Aplicar los nombres del titulo del modal y del botón para cada acción correspondiente en el modal, ya sea para registrar, modificar o borrar
     const NombresTitulos = (titulo) => {
         const modalTitulo = document.getElementById("modalTitulo");
         const btnConfirmar = document.getElementById("btnConfirmar");
         modalTitulo.innerText = titulo;
         btnConfirmar.innerText = titulo;
     }
+    // **
+
+    // Instrucción para decir que al cargar la página ejecute el método CargarPagina
     window.onload = CargarPagina;
+    // **
+
 </script>
+@* ** *@

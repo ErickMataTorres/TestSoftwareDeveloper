@@ -2,74 +2,64 @@
     ViewData["Title"] = "Ventas";
 }
 
+@* ************************************************** Estilos css ****************************************************** *@
 <style>
     h1 {
         text-align: center;
     }
-
     .nuevaContainer {
         display: flex;
         justify-content: flex-end;
     }
-
     .modalBodyContainers {
         display: flex;
         align-items: center;
     }
-
     .contenedorDivsModal div:not(:first-child) {
         margin-top: 2%;
     }
-
     #fechaRequerido {
         margin-left: 23%;
         color: #EA4242;
         display: none;
     }
-
     #montoRequerido {
         margin-left: 23%;
         color: #EA4242;
         display: none;
     }
-
     #personaRequerido {
         margin-left: 2%;
         color: #EA4242;
         display: none;
     }
-
     #camposCompletos {
         margin-top: 2%;
         color: #EA4242;
         display: none;
     }
-
     .alertMensajeLetra {
         font-weight: bold;
         font-size: larger;
     }
-
     .inputRequerido {
         border: 2px solid #EA4242;
     }
-
     #mensajeError2 {
         margin-top: 2%;
         color: #EA4242;
         display: none;
     }
-
     #txtPersona{
         margin-right:2%;
     }
-
     #labelAsterisco{
         color: #EA4242;
     }
-
 </style>
+@* ************************************************************************************************************ *@
 
+@* ************************************* Modal factura para administración de datos ********************************************* *@
 <div class="modal fade" id="modalFacturas1" aria-hidden="true" aria-labelledby="modalTitulo1" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -79,46 +69,39 @@
             </div>
             <div class="modal-body text-center">
                 <div class="contenedorDivsModal">
-
                     <div class="modalBodyContainers">
                         <label class="col-2">Id:</label><input type="text" class="form-control" placeholder="..." readonly id="txtId">
                     </div>
-
                     <div class="modalBodyContainers">
                         <label class="col-2">Fecha: <label id="labelAsterisco">*</label></label>
                         <input type="datetime-local" min="1990-01-01T00:00" class="form-control" placeholder="..." id="txtFecha" oninput="CampoObligatorio(event,this.id,'fechaRequerido');"/>
                     </div>
                     <label id="fechaRequerido">La fecha es requerida</label>
-
                     <div class="modalBodyContainers">
                         <label class="col-2">Monto: <label id="labelAsterisco">*</label></label><input type="number" class="form-control" placeholder="..." id="txtMonto" onkeypress="NoMayorA(event,50);" onpaste="event.preventDefault();" oninput="CampoObligatorio(event, this.id,'montoRequerido');" />
                     </div>
                     <label id="montoRequerido">El monto es requerido</label>
-
                     <div class="modalBodyContainers">
                         <label class="col-2">Persona: <label id="labelAsterisco">*</label></label>
                         <input class="form-control" placeholder="..." readonly id="txtPersona">
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFacturas2" onclick="ListaPersonas();">Buscar</button>
                     </div>
                     <label id="personaRequerido">La persona es requerida</label>
-
                 </div>
-
                 <label id="camposCompletos">Ingresar los campos obligatorios</label>
                 <label id="mensajeError2"></label>
-
                 <h4 id="h4Borrar">¿Estás seguro de borrarla?</h4>
-
             </div>
             <div class="modal-footer">
-
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnCerrarModal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnConfirmar" onclick="EjecutarAccion();">Save changes</button>
-
             </div>
         </div>
     </div>
 </div>
+@* ************************************************************************************************************ *@
+
+@* ** Modal con tabla para la selección de la persona a la que se le va a asignar la factura en los datos del modal primario ** *@
 <div class="modal fade" id="modalFacturas2" aria-hidden="true" aria-labelledby="modalTitulo2" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -127,7 +110,6 @@
                 <button type="button" class="btn-close" data-bs-target="#modalFacturas1" data-bs-toggle="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
                 <table id="tablaPersonas" class="table table-hover table-bordered table-striped" style="width:100%">
                     <thead>
                         <tr>
@@ -146,7 +128,6 @@
                         </tr>
                     </tfoot>
                 </table>
-                
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" data-bs-target="#modalFacturas1" data-bs-toggle="modal">Regresar</button>
@@ -154,18 +135,25 @@
         </div>
     </div>
 </div>
+@* ************************************************************************************************************ *@
 
-
+@* Título Ventas *@
 <h1>Ventas</h1>
+@* ** *@
 
+@* Contenedor para mostrar mensajes de alert *@
 <div id="liveAlertPlaceholder"></div>
+@* ** *@
 
+@* Contenedor de el botón registrar y de la tabla *@
 <div class="container">
-
+    @* Contenedor donde esta el botón Registrar una nueva factura *@
     <div class="nuevaContainer">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalFacturas1" onclick="AbrirModal('Registrar',null);">Registrar</button>
     </div>
+    @* ** *@
 
+    @* Tabla para mostrar las facturas existentes *@
     <table id="tablaFacturas" class="table table-hover table-bordered table-striped" style="width:100%">
         <thead>
             <tr>
@@ -186,204 +174,67 @@
             </tr>
         </tfoot>
     </table>
+    @* ** *@
+
 </div>
+@* ** *@
 
+@* Importación de la variable Url para la Api *@
 <script src="/js/Url.js"></script>
+@* ** *@
 
+@* Código JavaScript *@
 <script>
 
+    // Método para mandar llamar en cuanto cargue la página
     const CargarPagina = () => {
         ListaFacturas();
     }
+    // **
 
-    const AppendAlert = (mensaje, tipo) => {
-
-        const liveAlertPlaceholder = document.getElementById("liveAlertPlaceholder");
-        const idUnico = Date.now().toString() + Math.random().toString();
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = [
-            `<div class="alert alert-${tipo} alert-dismissible text-center" role="alert" id="${idUnico}">`,
-            `   <div class="alertMensajeLetra">${mensaje}</div>`,
-            '</div>'
-        ].join('');
-        liveAlertPlaceholder.append(wrapper);
-        setTimeout(() => {
-            document.getElementById(idUnico).remove();
-        }, 8000);
-    }
-
-    const NoMayorA = (event, cantidad) => {
-        if (event.target.value.length >= cantidad - 1) {
-            event.preventDefault();
-        }
-    }
-
-    const CampoObligatorio = (event, idInput, idIdentificador) => {
-        if (event.target.value.length === 0) {
-            document.getElementById(idIdentificador).style.display = "block";
-            document.getElementById(idInput).classList.add("inputRequerido");
-        } else {
-            document.getElementById(idIdentificador).style.display = "none";
-            document.getElementById(idInput).classList.remove("inputRequerido");
-        }
-    }
-
+    // Abrir el modal con sus validaciones correspondientes para resetear las opciones o alertas cada vez que se abra
     const AbrirModal = (titulo, item) => {
-
-        document.getElementById("txtFecha").classList.remove("inputRequerido");
-        document.getElementById("txtMonto").classList.remove("inputRequerido");
-        document.getElementById("txtPersona").classList.remove("inputRequerido");
-
-
-        const camposCompletos = document.getElementById("camposCompletos");
-        const fechaRequerido = document.getElementById("fechaRequerido");
-        const montoRequerido = document.getElementById("montoRequerido");
-        const personaRequerido = document.getElementById("personaRequerido");
-        const mensajeError2 = document.getElementById("mensajeError2");
-
-        camposCompletos.style.display = "none";
-        fechaRequerido.style.display = "none";
-        montoRequerido.style.display = "none";
-        personaRequerido.style.display = "none";
-        mensajeError2.style.display = "none";
-
-        const txtId = document.getElementById("txtId");
-        const txtFecha = document.getElementById("txtFecha");
-        const txtMonto = document.getElementById("txtMonto");
-        const txtPersona = document.getElementById("txtPersona");
-
-        const contenedorDivsModal = document.querySelector(".contenedorDivsModal");
-        const h4Borrar = document.getElementById("h4Borrar");
-
+        OcultarRequeridos();
         if (titulo === "Registrar") {
-            contenedorDivsModal.style.display = "block";
-            h4Borrar.style.display = "none";
-            txtId.value = "Nueva factura";
-            txtFecha.value = "";
-            txtMonto.value = "";
-            txtPersona.value = "";
+            ValidarTituloRegistrar();
         } else {
             if (titulo === "Modificar") {
-                contenedorDivsModal.style.display = "block";
-                h4Borrar.style.display = "none";
-                const datosPersona = item.split("|");
-                txtId.value = datosPersona[0];
-                txtFecha.value = datosPersona[1];
-                txtMonto.value = datosPersona[2];
-                txtPersona.value = datosPersona[4].trim() + " " + datosPersona[5].trim() + " " + datosPersona[6].trim();
-                txtPersona.setAttribute("data-idpersona", datosPersona[3]);
+                ValidarTituloModificar(item);
             } else {
-                console.log(item);
-                txtId.value = item;
-                contenedorDivsModal.style.display = "none";
-                h4Borrar.style.display = "block";
+                ValidarTituloBorrar(item);
             }
         }
-
-        const modalTitulo1 = document.getElementById("modalTitulo1");
-        const btnConfirmar = document.getElementById("btnConfirmar");
-        modalTitulo1.innerText = titulo;
-        btnConfirmar.innerText = titulo;
+        NombresTitulos(titulo);
     }
+    // **
 
+    // Ejecutar acción, es decir, enviar los datos a la api para registrar, modificar o borrar datos de la tabla
     const EjecutarAccion = () => {
-
         const accion = document.getElementById("modalTitulo1").textContent;
         const txtId = document.getElementById("txtId");
         const txtFecha = document.getElementById("txtFecha");
         const txtMonto = document.getElementById("txtMonto");
         const txtPersona = document.getElementById("txtPersona");
-
-
         if (txtFecha.value === "" || txtMonto.value === "" || txtPersona.value === "") {
             if (accion === "Registrar" || accion === "Modificar") {
-                
-                if (txtFecha.value === "") {
-                    document.getElementById("fechaRequerido").style.display="block";
-                    txtFecha.classList.add("inputRequerido");
-                }
-                if (txtMonto.value === "") {
-                    document.getElementById("montoRequerido").style.display = "block";
-                    txtMonto.classList.add("inputRequerido");
-                }
-                if (txtPersona.value === "") {
-                    document.getElementById("personaRequerido").style.display = "block";
-                    txtPersona.classList.add("inputRequerido");
-                }
-
-                const camposCompletos = document.getElementById("camposCompletos");
-                camposCompletos.style.display = "block";
+                ValidarRequeridosAlEjecutar(txtFecha, txtMonto, txtPersona);
                 return;
             }
         } else {
             if (accion === "Registrar" || accion == "Modificar") {
-                camposCompletos.style.display = "none";
+                document.getElementById("camposCompletos").style.display = "none";
             }
         }
-
         if (accion === "Borrar") {
-            fetch(Url + `/Factura/BorrarFactura/${txtId.value}`, {
-                method: "DELETE"
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Error al borrar el registro");
-                    }
-                    return response.json();
-                })
-                .then(response => {
-                    AppendAlert(response, "success");
-                    document.getElementById("btnCerrarModal").click();
-                    $("#tablaFacturas").DataTable().ajax.reload();
-
-                })
-                .catch(error => {
-                    console.error("Ha ocurrido une error", error);
-                })
+            HttpDeleteBorrar(txtId.value);
         } else {
-
-            let validacionId = 0;
-            if (accion === "Modificar") {
-                validacionId = txtId.value
-            }
-            const factura = {
-                id: validacionId,
-                fecha: txtFecha.value,
-                monto: txtMonto.value,
-                idPersona: txtPersona.getAttribute("data-idpersona")
-            };
-            fetch(Url + "/Factura/RegistrarFactura", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(factura)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error al ${accion}`);
-                    }
-                    return response.json();
-                })
-                .then(response => {
-
-                    if (response.id === 1 || response.id === 2) {
-                        AppendAlert(response.nombre, "success");
-                        document.getElementById("btnCerrarModal").click();
-                        $("#tablaFacturas").DataTable().ajax.reload();
-                    } else {
-                        const mensajeError2 = document.getElementById("mensajeError2");
-                        mensajeError2.textContent = response.nombre;
-                        mensajeError2.style.display = "block";
-                    }
-
-                })
-                .catch(error => {
-                    console.error("Ha ocurrido un error", error);
-                })
+            HttpPostRegistrarModificar(accion, txtId.value);
         }
     }
+    // **
 
+    /* Lista de facturas donde se muestran todas facturas existentes a través de hacer la petición GET a la api 
+       utilizando la librería datatable para la configuración de la tabla */
     const ListaFacturas = () => {
         $("#tablaFacturas").DataTable({
             ajax: {
@@ -422,7 +273,10 @@
             }
         });
     }
+    // **
 
+    /* Lista de personas donde se muestran los datos de las personas existentes para la asignación de una factura haciendo una petición GET a la api
+       y validando de que si no existe la tabla la va a crear desde cero pero si ya existe solamente la va a refrescar */
     const ListaPersonas = () => {
         if (!$.fn.DataTable.isDataTable('#tablaPersonas')) {
             $("#tablaPersonas").DataTable({
@@ -457,7 +311,146 @@
             $("#tablaPersonas").DataTable().ajax.reload();
         }
     }
+    // **
 
+    // Ocultar requeridos para resetear la configuración de validación en el método AbrirModal()
+    const OcultarRequeridos = () => {
+        document.getElementById("txtFecha").classList.remove("inputRequerido");
+        document.getElementById("txtMonto").classList.remove("inputRequerido");
+        document.getElementById("txtPersona").classList.remove("inputRequerido");
+        document.getElementById("camposCompletos").style.display = "none";
+        document.getElementById("fechaRequerido").style.display = "none";
+        document.getElementById("montoRequerido").style.display = "none";
+        document.getElementById("personaRequerido").style.display = "none";
+        document.getElementById("mensajeError2").style.display = "none";
+    }
+    // **
+
+    // Validar el titulo de registrar para aplicar la configuración necesaria para registrar una nueva factura en la tabla
+    const ValidarTituloRegistrar = () => {
+        document.querySelector(".contenedorDivsModal").style.display = "block";
+        document.getElementById("h4Borrar").style.display = "none";
+        document.getElementById("txtId").value = "Nueva factura";
+        document.getElementById("txtFecha").value = "";
+        document.getElementById("txtMonto").value = "";
+        document.getElementById("txtPersona").value = "";
+    }
+    // **
+
+    // Validar el titulo de modificar para aplicar la configuración necesaria para modificar una factura en la tabla
+    const ValidarTituloModificar = (item) => {
+        document.querySelector(".contenedorDivsModal").style.display = "block";
+        document.getElementById("h4Borrar").style.display = "none";
+        const datosPersona = item.split("|");
+        document.getElementById("txtId").value = datosPersona[0];
+        document.getElementById("txtFecha").value = datosPersona[1];
+        document.getElementById("txtMonto").value = datosPersona[2];
+        document.getElementById("txtPersona").value = datosPersona[4].trim() + " " + datosPersona[5].trim() + " " + datosPersona[6].trim();
+        document.getElementById("txtPersona").setAttribute("data-idpersona", datosPersona[3]);
+    }
+    // **
+
+    // Validar el titulo de borrar para aplicar la configuración necesaria para borrar una factura en la tabla
+    const ValidarTituloBorrar = (item) => {
+        document.getElementById("txtId").value = item;
+        document.querySelector(".contenedorDivsModal").style.display = "none";
+        document.getElementById("h4Borrar").style.display = "block";
+    }
+    // **
+
+    // Aplicar los nombres del titulo del modal y del botón para cada acción correspondiente en el modal, ya sea para registrar, modificar o borrar
+    const NombresTitulos = (titulo) => {
+        const modalTitulo1 = document.getElementById("modalTitulo1");
+        const btnConfirmar = document.getElementById("btnConfirmar");
+        modalTitulo1.innerText = titulo;
+        btnConfirmar.innerText = titulo;
+    }
+    // **
+
+    // Validación para mostrar las advertencias de si los inputs estan vacíos al dar click en registrar
+    const ValidarRequeridosAlEjecutar = (txtFecha, txtMonto, txtPersona) => {
+        if (txtFecha.value === "") {
+            document.getElementById("fechaRequerido").style.display = "block";
+            txtFecha.classList.add("inputRequerido");
+        }
+        if (txtMonto.value === "") {
+            document.getElementById("montoRequerido").style.display = "block";
+            txtMonto.classList.add("inputRequerido");
+        }
+        if (txtPersona.value === "") {
+            document.getElementById("personaRequerido").style.display = "block";
+            txtPersona.classList.add("inputRequerido");
+        }
+        document.getElementById("camposCompletos").style.display = "block";
+    }
+    // **
+
+    // Envío del id a la api por HttpDelete para borrar la factura al id correspondiente
+    const HttpDeleteBorrar = (id) => {
+        fetch(Url + `/Factura/BorrarFactura/${id}`, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al borrar el registro");
+                }
+                return response.json();
+            })
+            .then(response => {
+                AppendAlert(response, "success");
+                document.getElementById("btnCerrarModal").click();
+                $("#tablaFacturas").DataTable().ajax.reload();
+
+            })
+            .catch(error => {
+                console.error("Ha ocurrido une error", error);
+            })
+    }
+    // **
+
+    // HttpPost para el envío de datos para registrar o modificar una factura en la tabla con los datos que se ingresaron
+    const HttpPostRegistrarModificar = (accion, txtIdValue) => {
+        let validacionId = 0;
+        if (accion === "Modificar") {
+            validacionId = txtIdValue
+        }
+        const factura = {
+            id: validacionId,
+            fecha: document.getElementById("txtFecha").value,
+            monto: document.getElementById("txtMonto").value,
+            idPersona: document.getElementById("txtPersona").getAttribute("data-idpersona")
+        };
+        fetch(Url + "/Factura/RegistrarFactura", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(factura)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error al ${accion}`);
+                }
+                return response.json();
+            })
+            .then(response => {
+                if (response.id === 1 || response.id === 2) {
+                    AppendAlert(response.nombre, "success");
+                    document.getElementById("btnCerrarModal").click();
+                    $("#tablaFacturas").DataTable().ajax.reload();
+                } else {
+                    const mensajeError2 = document.getElementById("mensajeError2");
+                    mensajeError2.textContent = response.nombre;
+                    mensajeError2.style.display = "block";
+                }
+            })
+            .catch(error => {
+                console.error("Ha ocurrido un error", error);
+            })
+    }
+    // **
+
+    // Seleccion de datos de persona para enviarlos al modal principal para asignarse a la factura que se quiere registrar
     const SeleccionPersona = (item) => {
         let datosPersona = item.split("|");
         const txtPersona = document.getElementById("txtPersona");
@@ -471,6 +464,48 @@
             txtPersona.classList.add("inputRequerido");
         }
     }
+    // **
 
+    // Mostrar alertas en el html cuando se ha ejecutado una acción, tanto HttpPost como HttpDelete
+    const AppendAlert = (mensaje, tipo) => {
+        const liveAlertPlaceholder = document.getElementById("liveAlertPlaceholder");
+        const idUnico = Date.now().toString() + Math.random().toString();
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = [
+            `<div class="alert alert-${tipo} alert-dismissible text-center" role="alert" id="${idUnico}">`,
+            `   <div class="alertMensajeLetra">${mensaje}</div>`,
+            '</div>'
+        ].join('');
+        liveAlertPlaceholder.append(wrapper);
+        setTimeout(() => {
+            document.getElementById(idUnico).remove();
+        }, 8000);
+    }
+    // **
+
+    // Método para restringir el ingreso de caracteres a la cantidad que necesites
+    const NoMayorA = (event, cantidad) => {
+        if (event.target.value.length >= cantidad - 1) {
+            event.preventDefault();
+        }
+    }
+    // **
+
+    // Mostrar mensajes de datos requeridos que no se han ingresado y colorear el border en rojo del input correspondiente
+    const CampoObligatorio = (event, idInput, idIdentificador) => {
+        if (event.target.value.length === 0) {
+            document.getElementById(idIdentificador).style.display = "block";
+            document.getElementById(idInput).classList.add("inputRequerido");
+        } else {
+            document.getElementById(idIdentificador).style.display = "none";
+            document.getElementById(idInput).classList.remove("inputRequerido");
+        }
+    }
+    // **
+
+    // Instrucción para decir que al cargar la página ejecute el método CargarPagina
     window.onload = CargarPagina;
+    // **
+
 </script>
+@* ** *@
